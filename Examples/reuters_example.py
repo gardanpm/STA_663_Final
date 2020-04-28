@@ -1,4 +1,6 @@
 from src.utility import *
+from src.sampler import LatentDirichletAllocation, get_unique_words
+from src.inference import *
 
 if __name__ == '__main__':
 
@@ -9,6 +11,11 @@ if __name__ == '__main__':
     titles_to_tokens = {title: tokenize_doc(doc) for title, doc in titles_to_articles.items()}
 
     # Remove articles whose content is 'blah blah blah'
-    titles_to_tokens = {title: remove_stop_words(tokens, extra_words='reuter')
+    extra_words = ['reuter', 'said', 'also', 'would']
+    titles_to_tokens = {title: remove_stop_words(tokens, extra_words=extra_words)
                         for title, tokens in titles_to_tokens.items() if 'blah' not in tokens}
     titles_to_tokens_stem = {title: stem_tokens(tokens) for title, tokens in titles_to_tokens.items()}
+
+    unique_words = get_unique_words(titles_to_tokens_stem.values())
+    topic, phi, theta = LatentDirichletAllocation(titles_to_tokens_stem, K=10, alpha=1, niter=5)
+    print(get_top_n_words(phi, 5, unique_words))
