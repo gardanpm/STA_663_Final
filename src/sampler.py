@@ -1,5 +1,6 @@
 import numpy as np
 from random import choices
+from scipy import stats
 
 
 def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
@@ -13,7 +14,7 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
     :return: A (K x W) Nu
     '''
 
-    document_word_topics, document_topic_counts, word_topic_counts, total_topic_counts = initialize_topics(iden_to_tokens, K)
+    document_word_topics_MC, document_topic_counts, word_topic_counts, total_topic_counts = initialize_topics(iden_to_tokens, K)
     unique_words = get_unique_words(iden_to_tokens.values())
     W = len(unique_words)
 
@@ -21,11 +22,11 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
         for doc, words in iden_to_tokens.items():
             for i, word in enumerate(words):
                 densities = np.zeros(K)
-                curr_topic = document_word_topics[doc][i]
+                curr_topic = document_word_topics_MC[doc][i][-1]
                 for k in range(1, K + 1):
-                    N_kj = document_topic_counts[doc].get(k, 0)
-                    N_wk = word_topic_counts[word].get(k, 0)
-                    N_k = total_topic_counts.get(k, 0)
+                    N_kj = document_topic_counts[doc][k]
+                    N_wk = word_topic_counts[word][k]
+                    N_k = total_topic_counts[k]
 
                     # New draw is conditioned on everything BUT this observation
                     if curr_topic == k:
@@ -43,11 +44,12 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
                 densities /= np.sum(densities)  # Normalize
                 new_topic = choices(range(1, K + 1), densities)[0]
 
+                document_word_topics_MC[doc][i].append(new_topic)
                 if new_topic == curr_topic:
                     continue
 
                 # Update counts
-                document_word_topics[doc][i] = new_topic
+                #document_word_topics[doc][i] = new_topic
 
                 document_topic_counts[doc][curr_topic] -= 1
                 document_topic_counts[doc][new_topic] += 1
@@ -58,6 +60,7 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
                 total_topic_counts[curr_topic] -= 1
                 total_topic_counts[new_topic] += 1
 
+    document_word_topics = compute_MC_topic_approx(document_word_topics_MC)
     phi_matrix = compute_phi_estimates(word_topic_counts, total_topic_counts, K, unique_words, beta)
     theta_matrix = compute_theta_estimates(document_topic_counts, K, alpha)
 
@@ -67,7 +70,7 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
 def initialize_topics(iden_to_tokens, K):
 
     # Contains the ordered list of topics for each document (Dict of lists)
-    document_word_topics = {title: [] for title in iden_to_tokens.keys()}
+    document_word_topics_MC = {title: [] for title in iden_to_tokens.keys()}
 
     # Counts of each topic per document (Dict of dicts)
     document_topic_counts = {title: dict.fromkeys(range(1, K + 1), 0) for title in iden_to_tokens.keys()}
@@ -82,12 +85,26 @@ def initialize_topics(iden_to_tokens, K):
     for doc, words in iden_to_tokens.items():
         for i, word in enumerate(words):
             topic = np.random.randint(1, K + 1)
-            document_word_topics[doc].append(topic)
+            document_word_topics_MC[doc].append([topic])
             document_topic_counts[doc][topic] = document_topic_counts[doc].get(topic, 0) + 1
             word_topic_counts[word][topic] = word_topic_counts[word].get(topic, 0) + 1
             total_topic_counts[topic] = total_topic_counts[topic] + 1
 
-    return document_word_topics, document_topic_counts, word_topic_counts, total_topic_counts
+    return document_word_topics_MC, document_topic_counts, word_topic_counts, total_topic_counts
+
+
+def compute_MC_topic_approx(document_word_topics_MC):
+    '''
+    Given a Markov chain of word topics, compute a Monte Carlo approximation by picking mode of topics
+    :param document_word_topics:
+    :return:
+    '''
+    document_word_topics = {title: [] for title in document_word_topics_MC.keys()}
+    for doc, words in document_word_topics_MC.items():
+        for i, word in enumerate(words):
+            document_word_topics[doc].append(stats.mode(document_word_topics_MC[doc][i], axis=None)[0][0])
+
+    return document_word_topics
 
 
 def compute_phi_estimates(word_topic_counts, total_topic_counts, K, unique_words, beta):
