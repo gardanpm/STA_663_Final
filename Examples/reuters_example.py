@@ -1,4 +1,5 @@
 from src.utility import *
+from src.sampler import LatentDirichletAllocation
 
 if __name__ == '__main__':
 
@@ -12,3 +13,5 @@ if __name__ == '__main__':
     titles_to_tokens = {title: remove_stop_words(tokens, extra_words='reuter')
                         for title, tokens in titles_to_tokens.items() if 'blah' not in tokens}
     titles_to_tokens_stem = {title: stem_tokens(tokens) for title, tokens in titles_to_tokens.items()}
+
+    topic, phi, theta = LatentDirichletAllocation(titles_to_tokens_stem, 10, 1, niter=10)
