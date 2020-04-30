@@ -3,7 +3,7 @@
 #      Lars Buitinck
 #      Chyi-Kwei Yau 
 from src.utility import *
-from comparisons.print_sklearn import*
+from Comparisons.print_sklearn import*
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from time import time
