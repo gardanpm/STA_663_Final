@@ -14,7 +14,7 @@ if __name__ == '__main__':
     n_samples = 10
 
     ###### First get the data ready similarly to our implemented example
-    with open('C:/Users/pgard/STA_663_Final_para/Data/reuters21578/reut2-000.sgm') as f:
+    with open('../Data/reuters21578/reut2-000.sgm') as f:
             data = f.read()
 
     title_docs = parse_sgm_file(data)
