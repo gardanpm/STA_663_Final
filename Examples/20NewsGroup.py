@@ -25,6 +25,6 @@ if __name__ == '__main__':
 
     unique_words = get_unique_words(titles_to_tokens_stem.values())
     t0 = time()
-    topic, phi, theta = LatentDirichletAllocation(titles_to_tokens_stem, K=10, alpha=1, niter=5)
+    topic, phi, theta = LatentDirichletAllocation(titles_to_tokens_stem, K=20, alpha=2/20, niter=10)
     print("done in %0.3fs." % (time() - t0))
     print(get_top_n_words(phi, 5, unique_words))
