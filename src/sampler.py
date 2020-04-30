@@ -4,15 +4,15 @@ from scipy import stats
 
 
 def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
-    ''' Perform collapsed Gibbs sampling to discover latent topics in corpus
+    """ Perform collapsed Gibbs sampling to discover latent topics in corpus
 
-    :param iden_to_tokens: A dictionary that maps unique identifiers to their contents
+    :param iden_to_tokens: A dictionary that maps unique identifiers (titles) to their contents
     :param K: Number of topics for LDA to discover
     :param alpha: Determines sparsity of topic distributions per document
     :param beta: Determines sparsity of word distributions per topic
     :param niter: Number of iterations to run the Gibbs sampler for
-    :return: A (K x W) Nu
-    '''
+    :return: Topics per document (z), phi matrix, and theta matrix
+    """
 
     document_word_topics_MC, document_topic_counts, word_topic_counts, total_topic_counts = initialize_topics(iden_to_tokens, K)
     unique_words = get_unique_words(iden_to_tokens.values())
@@ -68,7 +68,14 @@ def LatentDirichletAllocation(iden_to_tokens, K, alpha, niter, beta=0.01):
 
 
 def initialize_topics(iden_to_tokens, K):
+    """
+    Randomly assign a topic to each word in the corpus
 
+    :param iden_to_tokens: A dictionary that maps unique identifiers (titles) to their contents
+    :param K: Number of choices of topics
+    :return: 4 dictionaries of counts (see comments below)
+    """
+    
     # Contains the ordered list of topics for each document (Dict of lists)
     document_word_topics_MC = {title: [] for title in iden_to_tokens.keys()}
 
@@ -94,11 +101,13 @@ def initialize_topics(iden_to_tokens, K):
 
 
 def compute_MC_topic_approx(document_word_topics_MC):
-    '''
+    """
     Given a Markov chain of word topics, compute a Monte Carlo approximation by picking mode of topics
-    :param document_word_topics:
-    :return:
-    '''
+    
+    :param document_word_topics: Dictionary that maps identifiers (titles) to a Markov chain of their topics
+    :return: Dictionary that maps identifiers (titles) to the Monte Carlo approx of their topics (mode)
+    """
+    
     document_word_topics = {title: [] for title in document_word_topics_MC.keys()}
     for doc, words in document_word_topics_MC.items():
         for i, word in enumerate(words):
@@ -108,6 +117,17 @@ def compute_MC_topic_approx(document_word_topics_MC):
 
 
 def compute_phi_estimates(word_topic_counts, total_topic_counts, K, unique_words, beta):
+    """
+    Compute estimate of the phi matrix, containing word distributions per topic
+
+    :param word_topic_counts: Dictionary that maps words to their respective counts per topic
+    :param total_topic_counts: Dictionary that maps each topic to the number of times it appears in corpus
+    :param K: Number of topics
+    :param unique_words: The unique list of words contained in the corpus
+    :param beta: Hyperparameter controlling sparsity of word distributions per topic
+    :return: (K x W) matrix of word probability per topic
+    """
+    
     W = len(unique_words)
     phi_matrix = np.zeros((K, W))
 
@@ -122,9 +142,15 @@ def compute_phi_estimates(word_topic_counts, total_topic_counts, K, unique_words
 
 
 def compute_theta_estimates(document_topic_counts, K, alpha):
-    '''
-    Compute a (K x D) matrix containing the mixture components of each document
-    '''
+    """
+    Compute a matrix containing the mixture components of each document
+
+    :param document_topic_counts: A dictionary mapping titles to topic counts in that document
+    :param K: Number of topics
+    :param alpha: Determines sparsity of topic distributions per document
+    :return: A (K x D) NumPy array of mixture distributions per document
+    """
+    
     theta_matrix = np.zeros((K, len(document_topic_counts)))
     for j, (doc, topics) in enumerate(document_topic_counts.items()):
         for topic in topics:
@@ -135,8 +161,12 @@ def compute_theta_estimates(document_topic_counts, K, alpha):
     return theta_matrix
 
 def get_unique_words(tokens):
-    ''' 
+    """
     Provide a list of unique tokens present in the list tokens
-    '''
+
+    :param tokens: List of lists containing all of the tokens in the corpus
+    :return: A list of all the unique tokens in the corpus
+    """
+    
     unique_words = set().union(*tokens)
     return list(unique_words)
