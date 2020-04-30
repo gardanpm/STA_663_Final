@@ -10,7 +10,7 @@ from time import time
 
 if __name__ == '__main__':
 
-    K=10
+    K=20
     dataset = fetch_20newsgroups(shuffle=True, random_state=1, remove=('headers', 'footers', 'quotes'))
 
     data = dataset['data']
