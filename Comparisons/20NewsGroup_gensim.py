@@ -45,4 +45,4 @@ if __name__ == '__main__':
     pprint(lda_model.print_topics())
     
     print("\nTopics proportions in Doc %s :" % docs_gen[doc_n])
-    topic_spec_doc_gen(lda_model,corpus_gen, doc_n)
+    topic_spec_doc_gen(lda_model,corpus, doc_n)
