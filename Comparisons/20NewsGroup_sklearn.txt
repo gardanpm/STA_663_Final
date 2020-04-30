@@ -4,7 +4,7 @@
 #      Chyi-Kwei Yau 
 # License: BSD 3 clause
 from src.utility import *
-from comparisons.print_sklearn import*
+from Comparisons.print_sklearn import*
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.datasets import fetch_20newsgroups
