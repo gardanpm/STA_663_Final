@@ -1,6 +1,7 @@
 from src.utility import *
 from src.sampler import LatentDirichletAllocation, get_unique_words
 from src.inference import *
+from time import time
 
 if __name__ == '__main__':
 
@@ -17,5 +18,7 @@ if __name__ == '__main__':
     titles_to_tokens_stem = {title: stem_tokens(tokens) for title, tokens in titles_to_tokens.items()}
 
     unique_words = get_unique_words(titles_to_tokens_stem.values())
+    t0 = time() 
     topic, phi, theta = LatentDirichletAllocation(titles_to_tokens_stem, K=10, alpha=1, niter=5)
+    print("done in %0.3fs." % (time() - t0))
     print(get_top_n_words(phi, 5, unique_words))
