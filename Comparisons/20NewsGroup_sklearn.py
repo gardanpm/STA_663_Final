@@ -57,7 +57,7 @@ if __name__ == '__main__':
     print("Fitting LDA models "
           "n_samples=%d ..."
           % (n_samples))
-    lda = LatentDirichletAllocation(n_components=n_topics, max_iter=5,
+    lda = LatentDirichletAllocation(n_components=n_topics, max_iter=n_samples,
                                     learning_method='online',
                                     random_state=0)
     lda.fit(tf)
