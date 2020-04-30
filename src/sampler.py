@@ -135,5 +135,8 @@ def compute_theta_estimates(document_topic_counts, K, alpha):
     return theta_matrix
 
 def get_unique_words(tokens):
+    ''' 
+    Provide a list of unique tokens present in the list tokens
+    '''
     unique_words = set().union(*tokens)
     return list(unique_words)
