@@ -4,7 +4,7 @@ from sklearn.datasets import fetch_20newsgroups
 # ! pip install gensim
 import gensim
 import gensim.corpora as corpora
-from comparison.func_gensim import *
+from comparisons.func_gensim import *
 from pprint import pprint
 from time import time
 
