@@ -17,7 +17,7 @@ if __name__ == '__main__':
     titles_to_tokens = {title: tokenize_doc(doc) for title, doc in title_docs.items()}
 
     # Remove articles whose content is 'blah blah blah'
-    extra_words = ['reuter', 'said', 'also', 'would']
+    extra_words = ['maxaxaxaxaxaxaxaxaxaxaxaxaxaxax', 'said', 'also', 'would', 'get', 'say', 'go', 'do', 'one']
     titles_to_tokens = {title: remove_stop_words(tokens, extra_words=extra_words)
                         for title, tokens in titles_to_tokens.items() if 'blah' not in tokens}
     
