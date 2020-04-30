@@ -11,7 +11,7 @@ from sklearn.datasets import fetch_20newsgroups
 from time import time
 
 n_samples = 10
-n_topics = 10
+n_topics = 20
 
 
 # Load the 20 newsgroups dataset and vectorize it. We use a few heuristics
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     print("Fitting LDA models "
           "n_samples=%d ..."
           % (n_samples))
-    lda = LatentDirichletAllocation(n_components=n_components, max_iter=5,
+    lda = LatentDirichletAllocation(n_components=n_topics, max_iter=5,
                                     learning_method='online',
                                     random_state=0)
     lda.fit(tf)
