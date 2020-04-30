@@ -1,4 +1,4 @@
-# Implement gensim LDA approximation in parallele on the 20NewsGroup dataset
+# Implement LDA with collapsed gibbs sampling on the 20NewsGroup dataset
 from src.utility import *
 from src.sampler import LatentDirichletAllocation, get_unique_words
 from src.inference import *
