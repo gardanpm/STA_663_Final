@@ -9,7 +9,7 @@ from pprint import pprint
 from time import time
 
 if __name__ == '__main__':
-    K = 10
+    K = 5
     n_top_words = 10
 
     ###### First get the data ready similarly to our implemented example
