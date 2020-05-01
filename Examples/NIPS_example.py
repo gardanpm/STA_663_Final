@@ -7,7 +7,7 @@ from src.inference import get_top_n_words
 
 if __name__ == "__main__":
 
-    zf = zipfile.ZipFile('../Data/NIPS/NIPS_1987-2015.csv.zip')
+    zf = zipfile.ZipFile('../Data/NIPS_1987-2015.csv.zip')
     nips_df = pd.read_csv(zf.open('NIPS_1987-2015.csv'))
     nips_df_red = nips_df.iloc[:, 1:].sample(frac=0.1, axis='columns')
 
