@@ -9,7 +9,7 @@ from sklearn.decomposition import LatentDirichletAllocation
 from time import time
 
 if __name__ == '__main__':
-    n_topics = 10
+    n_topics = 5
     n_top_words = 10
     n_samples = 10
 
