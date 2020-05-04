@@ -1,4 +1,4 @@
-# STA_663_Final
+# Latent Dirichlet Allocation with collapsed gibbs sampling
    ## This Repository shows the implementation of Latent Dirichlet Allocation with collapsed gibbs sampling in python by Cole Juracek and Pierre Gardan.
     
    ### - The detailed code can be found in document src 
